@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Test your packages in a test environment: https://github.com/chocolatey/chocolatey-test-environment -->
+
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <!-- == PACKAGE SPECIFIC SECTION == -->
+    <id>docker-engine</id>
+    <version>20.10.8</version>
+    <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
+    <owners>AJDurant</owners>
+    <!-- ============================== -->
+
+    <!-- == SOFTWARE SPECIFIC SECTION == -->
+    <title>Docker Engine</title>
+    <authors>Docker Contributors</authors>
+    <projectUrl>https://www.docker.com</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/AJDurant/choco-docker-engine/master/docker.png</iconUrl>
+    <copyright></copyright>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/docker/engine</projectSourceUrl>
+    <docsUrl>https://docs.docker.com/engine/</docsUrl>
+    <mailingListUrl>https://github.com/docker/docker#talking-to-other-docker-users-and-contributors</mailingListUrl>
+    <bugTrackerUrl>https://github.com/moby/moby/issues</bugTrackerUrl>
+    <tags>docker devops containers</tags>
+    <summary>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications.</summary>
+    <description>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. This package contains the docker engine for Windows to run Windows containers on Windows hosts.
+
+NOTE: Docker engine for Windows is is simply the service to run containers. You might want to have a look at the "docker-desktop" package for better usability.
+
+
+**Please Note**: This is an automatically updated package. If you find it is
+out of date by more than a day or two, please contact the maintainer(s) and
+let them know the package is no longer updating correctly.
+</description>
+    <!-- <releaseNotes>__REPLACE_OR_REMOVE__MarkDown_Okay</releaseNotes> -->
+    <!-- =============================== -->
+
+    <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
+    <!--<dependencies>
+      <dependency id="" version="__MINIMUM_VERSION__" />
+      <dependency id="" version="[__EXACT_VERSION__]" />
+      <dependency id="" version="[_MIN_VERSION_INCLUSIVE, MAX_VERSION_INCLUSIVE]" />
+      <dependency id="" version="[_MIN_VERSION_INCLUSIVE, MAX_VERSION_EXCLUSIVE)" />
+      <dependency id="" />
+      <dependency id="chocolatey-core.extension" version="1.1.0" />
+    </dependencies>-->
+    <!-- chocolatey-core.extension - https://chocolatey.org/packages/chocolatey-core.extension
+         - You want to use Get-UninstallRegistryKey on less than 0.9.10 (in chocolateyUninstall.ps1)
+         - You want to use Get-PackageParameters and on less than 0.11.0
+         - You want to take advantage of other functions in the core community maintainer's team extension package
+    -->
+
+    <!--<provides>NOT YET IMPLEMENTED</provides>-->
+    <!--<conflicts>NOT YET IMPLEMENTED</conflicts>-->
+    <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
