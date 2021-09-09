@@ -43,26 +43,34 @@ If ((!$DockerServiceInstanceExistsAndIsOurs) -AND ([bool](Get-Service docker -Er
 Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
 
 # Set up user group for non admin usage
-If (Get-LocalGroup $dockerGroup -ErrorAction SilentlyContinue) {
+If (net localgroup | Select-String $dockerGroup -Quiet) {
   Write-Host "$dockerGroup group already exists"
 } Else {
-  New-LocalGroup -Name $dockerGroup -Description "Users of Docker"
+  net localgroup $dockerGroup /add /comment:"Users of Docker"
 }
 $groupUser = $env:USER_NAME
-If ((Get-LocalGroupMember docker-users).Name -match $groupUser) {
+If (net localgroup $dockerGroup | Select-String $groupUser -Quiet) {
   Write-Host "$groupUser already in $dockerGroup group"
 } Else {
   Write-Host "Adding $groupUser to $dockerGroup group"
-  Add-LocalGroupMember -Group $dockerGroup -Member $groupUser
+  net localgroup $dockerGroup $groupUser /add
 }
 
 # Write config
 $daemonConfig = @{"group"=$dockerGroup}
-$daemonFile = "C:\ProgramData\docker\config\daemon.json"
-$jsonContent = $daemonConfig | ConvertTo-Json -Depth 10
-$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
-[IO.File]::WriteAllLines($daemonFile, $jsonContent, $Utf8NoBomEncoding)
+$daemonFolder = "C:\ProgramData\docker\config\"
+$daemonFile = Join-Path $daemonFolder "daemon.json"
+If (Test-Path $daemonFile) {
+  Write-Host "Config file '$daemonFile' already exists, not overwriting"
+} Else {
+  If (-not (Test-Path daemonFolder)) {
+    New-Item -ItemType Directory -Path $daemonFolder
+  }
+  $jsonContent = $daemonConfig | ConvertTo-Json -Depth 10
+  $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+  [IO.File]::WriteAllLines($daemonFile, $jsonContent, $Utf8NoBomEncoding)
+}
 
 # Install service
-Start-ChocolateyProcessAsAdmin -Statements "--register-service" -ExeToRun $dockerdPath -ValidExitCodes @(0)
-Start-ChocolateyProcessAsAdmin -Statements "start docker" "sc.exe" -ErrorAction Continue
+Start-ChocolateyProcessAsAdmin -Statements 'create docker binpath= "C:\ProgramData\chocolatey\lib\docker-engine\tools\docker\dockerd.exe --run-service" start= auto displayname= "Docker Engine"' "sc.exe"
+Write-Host "Docker Engine service created, start with: `sc start docker` "
