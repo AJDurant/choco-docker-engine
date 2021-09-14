@@ -1,11 +1,14 @@
 ﻿
 $ErrorActionPreference = 'Stop'; # stop on all errors
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+# Helper will exit if there is already a dockerd service that is not ours
+. "$toolsDir\helper.ps1"
 
-$url        = 'https://download.docker.com/win/static/stable/x86_64/docker-20.10.8.zip' # download url, HTTPS preferred
+$url = "https://download.docker.com/win/static/stable/x86_64/docker-$($env:ChocolateyPackageVersion).zip" # download url, HTTPS preferred
 
 $dockerdPath = Join-Path $toolsDir "docker\dockerd.exe"
 $dockerGroup = "docker-users"
+$groupUser = $env:USER_NAME
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
@@ -16,28 +19,6 @@ $packageArgs = @{
   # e.g. checksum -t sha256 -f path\to\file
   checksum      = 'D77503AE5D7BB2944019C4D521FAC4FDF6FC6E970865D93BE05007F2363C8144'
   checksumType  = 'sha256'
-
-}
-
-Function CheckServicePath ($ServiceEXE,$FolderToCheck)
-{
-  if ($RunningOnNano) {
-    #The NANO TP5 Compatible Way:
-    Return ([bool](@(wmic service | Where-Object {$_ -ilike "*$ServiceEXE*"}) -ilike "*$FolderToCheck*"))
-  }
-  Else
-  {
-    #The modern way:
-    Return ([bool]((Get-WmiObject win32_service | Where-Object {$_.PathName -ilike "*$ServiceEXE*"} | Select-Object -expand PathName) -ilike "*$FolderToCheck*"))
-  }
-}
-
-$DockerServiceInstanceExistsAndIsOurs = CheckServicePath 'dockerd.exe' "$toolsDir"
-
-If ((!$DockerServiceInstanceExistsAndIsOurs) -AND (sc query docker | Select-String 'SERVICE_NAME: docker' -Quiet))
-{
-  $ExistingDockerInstancePath = Get-ItemProperty hklm:\system\currentcontrolset\services\* | Where-Object {($_.ImagePath -ilike '*dockerd.exe*')} | Select-Object -expand ImagePath
-  Throw "You have requested that the docker service be installed, but this system appears to have an instance of an docker service configured for another folder ($ExistingDockerInstancePath). You will need to remove that instance of Docker to use the one that comes with this package."
 }
 
 Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
@@ -48,7 +29,6 @@ If (net localgroup | Select-String $dockerGroup -Quiet) {
 } Else {
   net localgroup $dockerGroup /add /comment:"Users of Docker"
 }
-$groupUser = $env:USER_NAME
 If (net localgroup $dockerGroup | Select-String $groupUser -Quiet) {
   Write-Host "$groupUser already in $dockerGroup group"
 } Else {
@@ -72,5 +52,6 @@ If (Test-Path $daemonFile) {
 }
 
 # Install service
-Start-ChocolateyProcessAsAdmin -Statements 'create docker binpath= "C:\ProgramData\chocolatey\lib\docker-engine\tools\docker\dockerd.exe --run-service" start= auto displayname= "Docker Engine"' "sc.exe"
-Write-Host "Docker Engine service created, start with: `sc start docker` "
+$scArgs = "create docker binpath= `"$dockerdPath --run-service`" start= auto displayname= `"$($env:ChocolateyPackageTitle)`""
+Start-ChocolateyProcessAsAdmin -Statements "$scArgs" "C:\Windows\System32\sc.exe"
+Write-Host "$($env:ChocolateyPackageTitle) service created, start with: `sc start docker` "

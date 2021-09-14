@@ -15,7 +15,7 @@
     <title>Docker Engine</title>
     <authors>Docker Contributors</authors>
     <projectUrl>https://www.docker.com</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/AJDurant/choco-docker-engine/main/docker.png</iconUrl>
+    <iconUrl>https://cdn.statically.io/gh/AJDurant/choco-docker-engine/b09de0d9597f97a074b1c10c0a6589f86fa3a93f/docker.png</iconUrl>
     <copyright></copyright>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>

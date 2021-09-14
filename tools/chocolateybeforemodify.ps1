@@ -8,43 +8,23 @@
 #  the currently installed version, not from the new upgraded package version.
 
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$dockerdPath = Join-Path $toolsDir "docker\dockerd.exe"
-Function CheckServicePath ($ServiceEXE,$FolderToCheck)
+# Helper will exit if there is already a dockerd service that is not ours
+. "$toolsDir\helper.ps1"
+
+If ($DockerServiceInstanceExistsAndIsOurs -AND (sc.exe query docker | Select-String 'RUNNING' -Quiet))
 {
-  if ($RunningOnNano) {
-    #The NANO TP5 Compatible Way:
-    Return ([bool](@(wmic service | Where-Object {$_ -ilike "*$ServiceEXE*"}) -ilike "*$FolderToCheck*"))
-  }
-  Else
+  #Shutdown and unregister service for upgrade
+  Write-output "Stopping docker service..."
+  Start-ChocolateyProcessAsAdmin -Statements "stop docker" "C:\Windows\System32\sc.exe"
+  Start-Sleep -seconds 3
+  If (-not (sc.exe query docker | Select-String 'STOPPED' -Quiet))
   {
-    #The modern way:
-    Return ([bool]((Get-WmiObject win32_service | Where-Object {$_.PathName -ilike "*$ServiceEXE*"} | Select-Object -expand PathName) -ilike "*$FolderToCheck*"))
+    Throw "Could not stop the docker service, please stop manually and retry this package."
   }
-}
-
-$DockerServiceInstanceExistsAndIsOurs = CheckServicePath 'dockerd.exe' "$toolsDir"
-
-If ((!$DockerServiceInstanceExistsAndIsOurs) -AND (sc query docker | Select-String 'SERVICE_NAME: docker' -Quiet))
-{
-  $ExistingDockerInstancePath = get-itemproperty hklm:\system\currentcontrolset\services\* | Where-Object {($_.ImagePath -ilike '*dockerd.exe*')} | Select-Object -expand ImagePath
-  Throw "You have requested that the docker service be installed, but this system appears to have an instance of an docker service configured for another folder ($ExistingDockerInstancePath). You will need to remove that instance of Docker to use the one that comes with this package."
-}
-
-If ($DockerServiceInstanceExistsAndIsOurs -AND (sc query docker | Select-String 'RUNNING' -Quiet))
-{
-    #Shutdown and unregister service for upgrade
-    Write-output "Stopping docker service..."
-    Start-ChocolateyProcessAsAdmin -Statements "stop docker" "sc.exe"
-    Start-Sleep -seconds 3
-    If (-not (sc query docker | Select-String 'STOPPED' -Quiet))
-    {
-      Throw "Could not stop the docker service, please stop manually and retry this package."
-    }
-
 }
 
 If ($DockerServiceInstanceExistsAndIsOurs)
 {
   Write-output "Unregistering docker service..."
-  Start-ChocolateyProcessAsAdmin -Statements "delete docker" "sc.exe"
+  Start-ChocolateyProcessAsAdmin -Statements "delete docker" "C:\Windows\System32\sc.exe"
 }
