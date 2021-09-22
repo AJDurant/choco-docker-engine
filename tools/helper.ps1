@@ -1,12 +1,11 @@
 
-$ProductName = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'ProductName').ProductName
 $EditionId = (Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name 'EditionID').EditionId
 $RunningOnNano = $False
 If ($EditionId -ilike '*Nano*') {
   $RunningOnNano = $True
 }
 
-Function CheckServicePath ($ServiceEXE, $FolderToCheck)
+Function Test-ServicePath ($ServiceEXE, $FolderToCheck)
 {
   if ($RunningOnNano) {
     #The NANO TP5 Compatible Way:
@@ -19,10 +18,26 @@ Function CheckServicePath ($ServiceEXE, $FolderToCheck)
   }
 }
 
-$DockerServiceInstanceExistsAndIsOurs = CheckServicePath 'dockerd.exe' "$toolsDir"
-
-If ((!$DockerServiceInstanceExistsAndIsOurs) -AND (sc.exe query docker | Select-String 'SERVICE_NAME: docker' -Quiet))
+Function Test-OurDockerd
 {
-  $ExistingDockerInstancePath = Get-ItemProperty hklm:\system\currentcontrolset\services\* | Where-Object {($_.ImagePath -ilike '*dockerd.exe*')} | Select-Object -expand ImagePath
-  Throw "You have requested that the docker service be installed, but this system appears to have an instance of an docker service configured for another folder ($ExistingDockerInstancePath). You will need to remove that instance of Docker to use the one that comes with this package."
+  return Test-ServicePath 'dockerd.exe' "$toolsDir"
+}
+
+Function Test-DockerdConflict
+{
+  If (-not (Test-OurDockerd) -AND (sc.exe query docker | Select-String 'SERVICE_NAME: docker' -Quiet))
+  {
+    $ExistingDockerInstancePath = Get-ItemProperty hklm:\system\currentcontrolset\services\* | Where-Object {($_.ImagePath -ilike '*dockerd.exe*')} | Select-Object -expand ImagePath
+    Throw "You have requested that the docker service be installed, but this system appears to have an instance of an docker service configured for another folder ($ExistingDockerInstancePath). You will need to remove that instance of Docker to use the one that comes with this package."
+  }
+}
+
+Function Test-DockerdRunning
+{
+  return [bool](C:\Windows\System32\sc.exe query docker | Select-String 'RUNNING' -Quiet)
+}
+
+Function Test-DockerdStopped
+{
+  return [bool](C:\Windows\System32\sc.exe query docker | Select-String 'STOPPED' -Quiet)
 }

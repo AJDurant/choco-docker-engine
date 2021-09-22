@@ -8,23 +8,17 @@
 #  the currently installed version, not from the new upgraded package version.
 
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-# Helper will exit if there is already a dockerd service that is not ours
 . "$toolsDir\helper.ps1"
+Test-DockerdConflict
 
-If ($DockerServiceInstanceExistsAndIsOurs -AND (sc.exe query docker | Select-String 'RUNNING' -Quiet))
+If ((Test-OurDockerd) -AND (Test-DockerdRunning))
 {
   #Shutdown and unregister service for upgrade
   Write-output "Stopping docker service..."
   Start-ChocolateyProcessAsAdmin -Statements "stop docker" "C:\Windows\System32\sc.exe"
   Start-Sleep -seconds 3
-  If (-not (sc.exe query docker | Select-String 'STOPPED' -Quiet))
+  If (-not (Test-DockerdStopped))
   {
     Throw "Could not stop the docker service, please stop manually and retry this package."
   }
-}
-
-If ($DockerServiceInstanceExistsAndIsOurs)
-{
-  Write-output "Unregistering docker service..."
-  Start-ChocolateyProcessAsAdmin -Statements "delete docker" "C:\Windows\System32\sc.exe"
 }

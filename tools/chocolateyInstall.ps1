@@ -1,8 +1,8 @@
 ﻿
 $ErrorActionPreference = 'Stop'; # stop on all errors
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-# Helper will exit if there is already a dockerd service that is not ours
 . "$toolsDir\helper.ps1"
+Test-DockerdConflict
 
 $url = "https://download.docker.com/win/static/stable/x86_64/docker-$($env:ChocolateyPackageVersion).zip" # download url, HTTPS preferred
 
@@ -51,7 +51,9 @@ If (Test-Path $daemonFile) {
   [IO.File]::WriteAllLines($daemonFile, $jsonContent, $Utf8NoBomEncoding)
 }
 
-# Install service
-$scArgs = "create docker binpath= `"$dockerdPath --run-service`" start= auto displayname= `"$($env:ChocolateyPackageTitle)`""
-Start-ChocolateyProcessAsAdmin -Statements "$scArgs" "C:\Windows\System32\sc.exe"
-Write-Host "$($env:ChocolateyPackageTitle) service created, start with: `sc start docker` "
+# Install service if not already there, conflict check at start also means no others.
+If (-not (Test-OurDockerd)) {
+  $scArgs = "create docker binpath= `"$dockerdPath --run-service`" start= auto displayname= `"$($env:ChocolateyPackageTitle)`""
+  Start-ChocolateyProcessAsAdmin -Statements "$scArgs" "C:\Windows\System32\sc.exe"
+  Write-Host "$($env:ChocolateyPackageTitle) service created, start with: `sc start docker` "
+}
