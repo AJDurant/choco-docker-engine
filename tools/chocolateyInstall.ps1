@@ -17,7 +17,7 @@ $packageArgs = @{
 
   # You can also use checksum.exe (choco install checksum) and use it
   # e.g. checksum -t sha256 -f path\to\file
-  checksum      = 'D77503AE5D7BB2944019C4D521FAC4FDF6FC6E970865D93BE05007F2363C8144'
+  checksum      = 'D1A87AE3A673AF9B46BA715501C91187C443D053E891E867FEA71BDC2986AE78'
   checksumType  = 'sha256'
 }
 
@@ -32,7 +32,7 @@ If (net localgroup | Select-String $dockerGroup -Quiet) {
 If (net localgroup $dockerGroup | Select-String $groupUser -Quiet) {
   Write-Host "$groupUser already in $dockerGroup group"
 } Else {
-  Write-Host "Adding $groupUser to $dockerGroup group"
+  Write-Host "Adding $groupUser to $dockerGroup group, you will need to log out and in to take effect"
   net localgroup $dockerGroup $groupUser /add
 }
 

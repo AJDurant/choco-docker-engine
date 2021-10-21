@@ -6,7 +6,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>docker-engine</id>
-    <version>20.10.8</version>
+    <version>20.10.9</version>
     <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
     <owners>AJDurant</owners>
     <!-- ============================== -->
@@ -29,6 +29,7 @@
 
 NOTE: Docker engine for Windows is is simply the service to run containers. You might want to have a look at the "docker-desktop" package for better usability.
 
+This package creates the group `docker-users` and adds the installing user to it. In order to communicate with docker you will need to log out and back in.
 
 **Please Note**: The docker engine requires the Windows Features: Containers and Microsoft-Hyper-V to be installed in order to function correctly. You can install these with the chocolatey command:
 `choco install Containers Microsoft-Hyper-V --source windowsfeatures`
