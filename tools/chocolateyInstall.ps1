@@ -43,7 +43,7 @@ $daemonFile = Join-Path $daemonFolder "daemon.json"
 If (Test-Path $daemonFile) {
   Write-Host "Config file '$daemonFile' already exists, not overwriting"
 } Else {
-  If (-not (Test-Path daemonFolder)) {
+  If (-not (Test-Path $daemonFolder)) {
     New-Item -ItemType Directory -Path $daemonFolder
   }
   $jsonContent = $daemonConfig | ConvertTo-Json -Depth 10
