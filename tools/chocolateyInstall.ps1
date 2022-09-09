@@ -17,7 +17,7 @@ $packageArgs = @{
 
   # You can also use checksum.exe (choco install checksum) and use it
   # e.g. checksum -t sha256 -f path\to\file
-  checksum      = 'C5D287DB39A369ADA1C814070210989D2538F423B79F660A0638FCF14DB2A74A'
+  checksum      = '79B61DC05926BDB591CC0E5CBE5AD8196D29D72A68FC46012C20A905DE1A215C'
   checksumType  = 'sha256'
 }
 
