@@ -23,6 +23,13 @@ $packageArgs = @{
 
 Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
 
+# Ignore the CLI plugins for shim gen
+$cliPlugins = get-childitem $toolsDir\docker\cli-plugins -include *.exe -recurse
+foreach ($file in $cliPlugins) {
+  #generate an ignore file
+  New-Item "$file.ignore" -type file -force | Out-Null
+}
+
 # Set up user group for non admin usage
 If (net localgroup | Select-String $dockerGroup -Quiet) {
   Write-Host "$dockerGroup group already exists"
