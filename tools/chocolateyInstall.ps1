@@ -6,8 +6,13 @@ Test-DockerdConflict
 
 $url = "https://download.docker.com/win/static/stable/x86_64/docker-$($env:ChocolateyPackageVersion).zip" # download url, HTTPS preferred
 
+$pp = Get-PackageParameters
+
+If ( !$pp.DockerGroup ) {
+    $pp.DockerGroup = "docker-users"
+}
+
 $dockerdPath = Join-Path $toolsDir "docker\dockerd.exe"
-$dockerGroup = "docker-users"
 $groupUser = $env:USER_NAME
 
 $packageArgs = @{
@@ -24,20 +29,22 @@ $packageArgs = @{
 Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
 
 # Set up user group for non admin usage
-If (net localgroup | Select-String $dockerGroup -Quiet) {
-  Write-Host "$dockerGroup group already exists"
+If (net localgroup | Select-String $($pp.DockerGroup) -Quiet) {
+  Write-Host "$($pp.DockerGroup) group already exists"
 } Else {
-  net localgroup $dockerGroup /add /comment:"Users of Docker"
+  net localgroup $($pp.DockerGroup) /add /comment:"Users of Docker"
 }
-If (net localgroup $dockerGroup | Select-String $groupUser -Quiet) {
-  Write-Host "$groupUser already in $dockerGroup group"
-} Else {
-  Write-Host "Adding $groupUser to $dockerGroup group, you will need to log out and in to take effect"
-  net localgroup $dockerGroup $groupUser /add
+If ( !$pp.noAddGroupUser ) {
+  If (net localgroup $($pp.DockerGroup) | Select-String $groupUser -Quiet) {
+  Write-Host "$groupUser already in $($pp.DockerGroup) group"
+  } Else {
+  Write-Host "Adding $groupUser to $($pp.DockerGroup) group, you will need to log out and in to take effect"
+  net localgroup $($pp.DockerGroup) $groupUser /add
+  }
 }
 
 # Write config
-$daemonConfig = @{"group"=$dockerGroup}
+$daemonConfig = @{"group"=$($pp.DockerGroup)}
 $daemonFolder = "C:\ProgramData\docker\config\"
 $daemonFile = Join-Path $daemonFolder "daemon.json"
 If (Test-Path $daemonFile) {
