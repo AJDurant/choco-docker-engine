@@ -20,6 +20,11 @@ Function Test-ServicePath ($ServiceEXE, $FolderToCheck)
 
 Function Test-OurDockerd
 {
+  return (Test-ServicePath 'dockerd.exe' "$env:ProgramFiles") -Or (Test-ServicePath 'dockerd.exe' "$toolsDir")
+}
+
+Function Test-OurOldDockerd
+{
   return Test-ServicePath 'dockerd.exe' "$toolsDir"
 }
 

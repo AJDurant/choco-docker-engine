@@ -6,7 +6,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>docker-engine</id>
-    <version>20.10.23</version>
+    <version>23.0.0</version>
     <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
     <owners>AJDurant</owners>
     <!-- ============================== -->
@@ -28,6 +28,8 @@
     <description>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. This package contains the docker engine for Windows to run Windows containers on Windows hosts.
 
 NOTE: Docker engine for Windows is is simply the service to run containers. You might want to have a look at the "docker-desktop" package for better usability.
+
+From v23 docker engine is installed into `$env:ProgramFiles\docker` (the default docker location). A shim is still generated for the docker cli.
 
 ### Package Specific
 This package by default creates the group `docker-users` and adds the installing user to it, you can customise this with package parameters. In order to communicate with docker you will need to log out and back in.

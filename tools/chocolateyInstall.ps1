@@ -12,28 +12,23 @@ If ( !$pp.DockerGroup ) {
     $pp.DockerGroup = "docker-users"
 }
 
-$dockerdPath = Join-Path $toolsDir "docker\dockerd.exe"
+$dockerdPath = Join-Path $env:ProgramFiles "docker\dockerd.exe"
 $groupUser = $env:USER_NAME
 
 $packageArgs = @{
-  packageName   = $env:ChocolateyPackageName
-  unzipLocation = $toolsDir
-  url           = $url
+  PackageName    = $env:ChocolateyPackageName
+  UnzipLocation  = $env:ProgramFiles
+  Url            = $url
 
   # You can also use checksum.exe (choco install checksum) and use it
   # e.g. checksum -t sha256 -f path\to\file
-  checksum      = '59D51669242756B77C22E4D7DB6AA44B9FE8A03F46B107276A355AE365D8AAEB'
-  checksumType  = 'sha256'
+  Checksum       = '7CDF8DFB19B545079BEE399B927B77220987B0428501E0D1525311D31CA8B29E'
+  ChecksumType   = 'sha256'
 }
 
 Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-install-chocolatey-zip-package
 
-# Ignore the CLI plugins for shim gen
-$cliPlugins = get-childitem $toolsDir\docker\cli-plugins -include *.exe -recurse
-foreach ($file in $cliPlugins) {
-  #generate an ignore file
-  New-Item "$file.ignore" -type file -force | Out-Null
-}
+Install-BinFile -Name "docker" -Path "$env:ProgramFiles\docker\docker.exe"
 
 # Set up user group for non admin usage
 If (net localgroup | Select-String $($pp.DockerGroup) -Quiet) {
@@ -52,7 +47,7 @@ If ( !$pp.noAddGroupUser ) {
 
 # Write config
 $daemonConfig = @{"group"=$($pp.DockerGroup)}
-$daemonFolder = "C:\ProgramData\docker\config\"
+$daemonFolder = "$env:ProgramData\docker\config\"
 $daemonFile = Join-Path $daemonFolder "daemon.json"
 If (Test-Path $daemonFile) {
   Write-Host "Config file '$daemonFile' already exists, not overwriting"
@@ -63,6 +58,18 @@ If (Test-Path $daemonFile) {
   $jsonContent = $daemonConfig | ConvertTo-Json -Depth 10
   $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
   [IO.File]::WriteAllLines($daemonFile, $jsonContent, $Utf8NoBomEncoding)
+}
+
+# From v23 the package is now installed in Program Files. So clean up old files/service from tools
+If (Test-Path "$toolsDir\docker")
+{
+  Write-output "Cleaning up old docker files..."
+  Remove-Item "$toolsDir\docker" -Recurse -Force
+}
+If (Test-OurOldDockerd)
+{
+  Write-output "Unregistering old docker service..."
+  Start-ChocolateyProcessAsAdmin -Statements "delete docker" "C:\Windows\System32\sc.exe"
 }
 
 # Install service if not already there, conflict check at start also means no others.
