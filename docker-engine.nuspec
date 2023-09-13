@@ -6,7 +6,7 @@
   <metadata>
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>docker-engine</id>
-    <version>24.0.4</version>
+    <version>24.0.5</version>
     <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
     <owners>AJDurant</owners>
     <!-- ============================== -->
@@ -47,7 +47,7 @@ To pass parameters, use `--params "''"` (e.g. `choco install docker-engine [othe
 To have choco remember parameters on upgrade, be sure to set `choco feature enable -n=useRememberedArgumentsForUpgrades`.
 
 **Please Note**: If you change the DockerGroup having previously installed docker-engine, the `daemon.json` config file will not be overwritten, you will need to manually update it.
-</description>
+    </description>
     <releaseNotes>https://docs.docker.com/engine/release-notes/</releaseNotes>
     <!-- =============================== -->
 
