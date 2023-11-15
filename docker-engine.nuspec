@@ -3,29 +3,29 @@
 
 <!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
-  <metadata>
-    <!-- == PACKAGE SPECIFIC SECTION == -->
-    <id>docker-engine</id>
-    <version>24.0.6</version>
-    <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
-    <owners>AJDurant</owners>
-    <!-- ============================== -->
+    <metadata>
+        <!-- == PACKAGE SPECIFIC SECTION == -->
+        <id>docker-engine</id>
+        <version>24.0.7</version>
+        <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
+        <owners>AJDurant</owners>
+        <!-- ============================== -->
 
-    <!-- == SOFTWARE SPECIFIC SECTION == -->
-    <title>Docker Engine</title>
-    <authors>Docker Contributors</authors>
-    <projectUrl>https://www.docker.com</projectUrl>
-    <iconUrl>https://cdn.statically.io/gh/AJDurant/choco-docker-engine/b09de0d9597f97a074b1c10c0a6589f86fa3a93f/docker.png</iconUrl>
-    <copyright></copyright>
-    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <projectSourceUrl>https://github.com/docker/engine</projectSourceUrl>
-    <docsUrl>https://docs.docker.com/engine/</docsUrl>
-    <mailingListUrl>https://github.com/docker/docker#talking-to-other-docker-users-and-contributors</mailingListUrl>
-    <bugTrackerUrl>https://github.com/moby/moby/issues</bugTrackerUrl>
-    <tags>docker devops containers</tags>
-    <summary>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications.</summary>
-    <description>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. This package contains the docker engine for Windows to run Windows containers on Windows hosts.
+        <!-- == SOFTWARE SPECIFIC SECTION == -->
+        <title>Docker Engine</title>
+        <authors>Docker Contributors</authors>
+        <projectUrl>https://www.docker.com</projectUrl>
+        <iconUrl>https://cdn.statically.io/gh/AJDurant/choco-docker-engine/b09de0d9597f97a074b1c10c0a6589f86fa3a93f/docker.png</iconUrl>
+        <copyright></copyright>
+        <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <projectSourceUrl>https://github.com/docker/engine</projectSourceUrl>
+        <docsUrl>https://docs.docker.com/engine/</docsUrl>
+        <mailingListUrl>https://github.com/docker/docker#talking-to-other-docker-users-and-contributors</mailingListUrl>
+        <bugTrackerUrl>https://github.com/moby/moby/issues</bugTrackerUrl>
+        <tags>docker devops containers</tags>
+        <summary>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications.</summary>
+        <description>Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications. This package contains the docker engine for Windows to run Windows containers on Windows hosts.
 
 NOTE: Docker engine for Windows is is simply the service to run containers. You might want to have a look at the "docker-desktop" package for better usability.
 
@@ -47,21 +47,21 @@ To pass parameters, use `--params "''"` (e.g. `choco install docker-engine [othe
 To have choco remember parameters on upgrade, be sure to set `choco feature enable -n=useRememberedArgumentsForUpgrades`.
 
 **Please Note**: If you change the DockerGroup having previously installed docker-engine, the `daemon.json` config file will not be overwritten, you will need to manually update it.
-    </description>
-    <releaseNotes>https://docs.docker.com/engine/release-notes/</releaseNotes>
-    <!-- =============================== -->
+        </description>
+        <releaseNotes>https://docs.docker.com/engine/release-notes/</releaseNotes>
+        <!-- =============================== -->
 
-    <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
-    <dependencies>
-      <!-- <dependency id="Microsoft-Hyper-V" source="windowsfeatures" />
+        <!-- Specifying dependencies and version ranges? https://docs.nuget.org/create/versioning#specifying-version-ranges-in-.nuspec-files -->
+        <dependencies>
+            <!-- <dependency id="Microsoft-Hyper-V" source="windowsfeatures" />
       <dependency id="Containers" source="windowsfeatures" /> -->
-    </dependencies>
+        </dependencies>
 
-    <!--<provides>NOT YET IMPLEMENTED</provides>-->
-    <!--<conflicts>NOT YET IMPLEMENTED</conflicts>-->
-    <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
-  </metadata>
-  <files>
-    <file src="tools\**" target="tools" />
-  </files>
+        <!--<provides>NOT YET IMPLEMENTED</provides>-->
+        <!--<conflicts>NOT YET IMPLEMENTED</conflicts>-->
+        <!--<replaces>NOT YET IMPLEMENTED</replaces>-->
+    </metadata>
+    <files>
+        <file src="tools\**" target="tools" />
+    </files>
 </package>
