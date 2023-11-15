@@ -42,6 +42,7 @@ The following package parameters can be set:
 
  * `/DockerGroup:` - Name of the user group for using docker - defaults to "docker-users"
  * `/noAddGroupUser` - Prevent adding the current user to the DockerGroup
+ * `/StartService` - Automatically start (or restart) the docker service after install (or upgrade)
 
 To pass parameters, use `--params "''"` (e.g. `choco install docker-engine [other options] --params="'/DockerGroup:my-docker-group /noAddGroupUser'"`).
 To have choco remember parameters on upgrade, be sure to set `choco feature enable -n=useRememberedArgumentsForUpgrades`.
