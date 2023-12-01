@@ -77,12 +77,12 @@ If (Test-OurOldDockerd) {
 If (-not (Test-OurDockerd)) {
     $scArgs = "create docker binpath= `"$dockerdPath --run-service`" start= auto displayname= `"$($env:ChocolateyPackageTitle)`""
     Start-ChocolateyProcessAsAdmin -Statements "$scArgs" "C:\Windows\System32\sc.exe"
+}
 
-    If (!$pp.StartService) {
-        Write-Host "$($env:ChocolateyPackageTitle) service created, start with: `sc start docker` "
-    }
-    Else {
-        Write-output "Starting docker service..."
-        Start-ChocolateyProcessAsAdmin -Statements "start docker" "C:\Windows\System32\sc.exe"
-    }
+If (!$pp.StartService) {
+    Write-Host "$($env:ChocolateyPackageTitle) service created, start with: `sc start docker` "
+}
+Else {
+    Write-output "Starting docker service..."
+    Start-ChocolateyProcessAsAdmin -Statements "start docker" "C:\Windows\System32\sc.exe"
 }
