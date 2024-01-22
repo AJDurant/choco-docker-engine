@@ -6,7 +6,7 @@
     <metadata>
         <!-- == PACKAGE SPECIFIC SECTION == -->
         <id>docker-engine</id>
-        <version>24.0.7.20231201</version>
+        <version>25.0.0</version>
         <packageSourceUrl>https://github.com/AJDurant/choco-docker-engine</packageSourceUrl>
         <owners>AJDurant</owners>
         <!-- ============================== -->
