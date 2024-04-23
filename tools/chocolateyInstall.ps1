@@ -4,7 +4,7 @@ $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 . "$toolsDir\helper.ps1"
 Test-DockerdConflict
 
-$url = "https://download.docker.com/win/static/stable/x86_64/docker-26.0.2.zip" # download url, HTTPS preferred
+$url = "https://download.docker.com/win/static/stable/x86_64/docker-26.1.0.zip" # download url, HTTPS preferred
 
 $pp = Get-PackageParameters
 
@@ -22,7 +22,7 @@ $packageArgs = @{
 
     # You can also use checksum.exe (choco install checksum) and use it
     # e.g. checksum -t sha256 -f path\to\file
-    Checksum      = '91DE4B913DEC2C5E4361B65E7C75874446396EE9693EC992F20E57C2EC09F68A'
+    Checksum      = 'AA2BAFA9FDE1B33163297DECDC9DEC872E5AA378A826EF387DC6AF918358B4C6'
     ChecksumType  = 'sha256'
 }
 
