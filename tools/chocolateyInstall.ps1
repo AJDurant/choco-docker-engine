@@ -31,14 +31,14 @@ Install-ChocolateyZipPackage @packageArgs # https://chocolatey.org/docs/helpers-
 Install-BinFile -Name "docker" -Path "$env:ProgramFiles\docker\docker.exe"
 
 # Set up user group for non admin usage
-If (net localgroup | Select-String $($pp.DockerGroup) -Quiet) {
+If (net localgroup | Select-String $($pp.DockerGroup) -SimpleMatch -Quiet) {
     Write-Host "$($pp.DockerGroup) group already exists"
 }
 Else {
     net localgroup $($pp.DockerGroup) /add /comment:"Users of Docker"
 }
 If ( !$pp.noAddGroupUser ) {
-    If (net localgroup $($pp.DockerGroup) | Select-String $groupUser -Quiet) {
+    If (net localgroup $($pp.DockerGroup) | Select-String $groupUser -SimpleMatch -Quiet) {
         Write-Host "$groupUser already in $($pp.DockerGroup) group"
     }
     Else {
