@@ -1,5 +1,9 @@
 ﻿# choco-docker-engine
 
+My chocolately pacakges are now all in one place: https://github.com/AJDurant/choco-packages
+
+## Deprecated repo
+
 This repository contains Chocolatey Package Manager definitions for the
 [Docker Engine for Windows](https://chocolatey.org/packages/docker-engine).
 
